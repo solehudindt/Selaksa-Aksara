@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main>
+    <div class="container">
+      <section class="mb-4">
+
+        <!--Grid row-->
+        <div class="row wow fadeIn">
+        <h2>Pesanan</h2>
+
+            <div class="table-responsive text-nowrap">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nama</th>
+                        <th scope="col">Harga</th>
+                        <th scope="col">Diskon</th>
+                        <th scope="col">Jumlah</th>
+                        <th scope="col">Total Harga</th>
+                    </thead>
+                    <tbody>
+                    {% for item in object.barangs.all %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ item.barang.judul }}</td>
+                        <td>{{ item.barang.harga}}</td>
+                        <td>{% if item.barang.hrg_diskon is None %}0
+                        {% else %}
+                        {{ item.barang.hrg_diskon }}
+                        {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'core:rmv-single' item.barang.slug %}" ><i class="fas fa-minus-square"></i></a>
+                                {{ item.jumlah }}
+                            <a href="{% url 'core:addtocart' item.barang.slug %}"><i class="fas fa-plus-square"></i></td></a>
+                        <td>
+                        {% if item.barang.hrg_diskon %}
+                            {{item.get_total_hrg_diskon}}<span class="badge badge-primary">{{item.get_hemat}}</span>
+                        {% else %}
+                            {{item.get_total_hrg}}
+                        {% endif %}
+                        </td>
+                    </tr>
+                    
+                    {% empty %}
+                    <tr>
+                        <td colspan="5"> Belum ada barang dikeranjang</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                        <a class="btn btn-primary float-right" href=''>Kembali Belanja</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    {% if object.get_total %}
+                    <tr>
+                        <td colspan="5"><b>Total</b></td>
+                        <td><strong>Rp. {{object.get_total}}</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                        <a class="btn btn-secondary float-right ml-2" href='{% url 'core:checkout' %}'>Proses</a>
+                        <a class="btn btn-primary float-right" href='{% url 'core:index' %}'>Kembali Belanja</a>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </table>
+
+            </div>
+        </div>
+    </section>
+    </div>
+</main>
+
+{% endblock content %}
+
